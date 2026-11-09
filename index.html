@@ -207,9 +207,8 @@ function printPhotos() {
   const imageData = canvas.toDataURL("image/jpeg", 0.95);
 
   const printWindow = window.open("", "_blank");
-
   if (!printWindow) {
-    alert("اسمح بفتح النوافذ المنبثقة حتى تطبع");
+    alert("اسمح بالنوافذ المنبثقة");
     return;
   }
 
@@ -220,30 +219,31 @@ function printPhotos() {
 
   printWindow.document.write(`
     <!DOCTYPE html>
-    <html lang="ar">
+    <html>
     <head>
-    <meta charset="UTF-8">
-    <title>طباعة الصور</title>
-    <style>
-      @page { size: A4; margin: 10mm; }
-      body { margin:0; }
-      .sheet {
-        display:grid;
-        grid-template-columns:repeat(2, ${width}mm);
-        grid-auto-rows:${height}mm;
-        gap:5mm;
-        justify-content:center;
-        align-content:start;
-      }
-      img { display:block; }
-    </style>
+      <meta charset="UTF-8">
+      <style>
+        @page { size: A4; margin: 10mm; }
+        body { margin: 0; }
+        .sheet {
+          display: grid;
+          grid-template-columns: repeat(2, ${width}mm);
+          grid-template-rows: repeat(3, ${height}mm);
+          gap: 5mm;
+          justify-content: center;
+          align-content: start;
+        }
+        img {
+          width: ${width}mm;
+          height: ${height}mm;
+          display: block;
+        }
+      </style>
     </head>
     <body>
       <div class="sheet">${pictures}</div>
       <script>
-        window.onload = function() {
-          setTimeout(function(){ window.print(); }, 500);
-        };
+        window.onload = () => setTimeout(() => window.print(), 700);
       <\/script>
     </body>
     </html>
