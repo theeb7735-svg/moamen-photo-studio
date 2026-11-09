@@ -1,170 +1,258 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>استوديو صور المعاملات</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moamen Photo Studio</title>
 <style>
-:root{--bg:#f3f5f8;--panel:#fff;--ink:#172033;--muted:#667085;--accent:#2457d6;--line:#e4e8ef}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}
-header{background:#17243d;color:#fff;padding:22px 5vw;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-header h1{font-size:22px;margin:0}header p{margin:7px 0 0;color:#cbd5e1;font-size:13px}
-main{max-width:1250px;margin:24px auto;padding:0 18px;display:grid;grid-template-columns:minmax(280px,370px) 1fr;gap:20px}
-.panel,.preview{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 5px 18px #17243d0a}
-h2{font-size:16px;margin:0 0 15px}.group{padding-bottom:15px;margin-bottom:15px;border-bottom:1px solid var(--line)}
-label{display:block;font-size:13px;font-weight:bold;margin:0 0 8px}
-input,select,button{font:inherit}input[type=file]{width:100%;font-size:12px}select,input[type=number]{width:100%;padding:10px;border:1px solid #d6dce6;border-radius:9px;background:#fff;color:var(--ink)}
-input[type=range]{width:100%;accent-color:var(--accent)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.check{display:flex;align-items:center;gap:8px;font-size:13px;margin:10px 0}.check label{margin:0}
-.actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:11px 14px;background:var(--accent);color:#fff;font-weight:bold;cursor:pointer}.btn.secondary{background:#edf1f8;color:#26344d}.btn:disabled{opacity:.45;cursor:not-allowed}
-.note{font-size:11px;line-height:1.7;color:var(--muted);margin-top:9px}
-.preview{min-height:600px;display:flex;flex-direction:column;align-items:center}
-.preview-top{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.canvas-wrap{margin:20px auto 12px;background: repeating-conic-gradient(#f0f2f5 0% 25%,#fff 0% 50%) 50%/18px 18px;padding:18px;border-radius:12px;max-width:100%;overflow:auto}
-canvas{display:block;max-width:min(100%,520px);height:auto;background:#fff;box-shadow:0 3px 15px #0002}
-.empty{width:min(100%,430px);aspect-ratio:7/9;border:2px dashed #cbd3df;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;color:#7b8798;padding:30px;line-height:1.8}
-.status{font-size:12px;color:var(--muted)}
-footer{text-align:center;color:#8791a2;font-size:11px;padding:15px}
-@media(max-width:850px){main{grid-template-columns:1fr}.preview{min-height:420px}}
-@media print{
- @page{size:A4;margin:8mm}
- body{background:#fff}.no-print,header,footer,main>.panel,.preview-top,.status{display:none!important}
- main{display:block;margin:0;padding:0}.preview{border:0;box-shadow:none;padding:0;min-height:0}
- .canvas-wrap{display:none}
- #printSheet{display:grid!important;grid-template-columns:repeat(var(--cols,3),var(--photo-w,35mm));gap:4mm;align-content:start;justify-content:start}
- .print-photo{width:var(--photo-w,35mm);height:var(--photo-h,45mm);object-fit:fill;border:0}
-}
-#printSheet{display:none}
-</style></head>
+*{box-sizing:border-box}
+body{margin:0;background:#eef1f5;color:#202735;font-family:Arial,sans-serif}
+header{background:#17243a;color:white;text-align:center;padding:18px}
+header h2{margin:0 0 7px}
+main{max-width:850px;margin:18px auto;padding:12px}
+.panel{background:white;padding:16px;border-radius:14px;margin-bottom:14px;box-shadow:0 2px 9px #0001}
+button,.upload{background:#203b60;color:white;border:0;padding:12px 17px;border-radius:8px;cursor:pointer;margin:4px}
+input,select{padding:10px;border:1px solid #ccd2dc;border-radius:7px;margin:5px;max-width:100%}
+.preview{width:210px;height:270px;margin:12px auto;background:#ddd;overflow:hidden;position:relative;border:2px solid #aaa}
+canvas{width:100%;height:100%;object-fit:contain}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+label{font-size:14px}
+@media(min-width:600px){.preview{width:260px;height:335px}}
+</style>
+</head>
 <body>
-<header><div><h1>استوديو صور المعاملات</h1><p>تجهيز الصور الشخصية وحفظها وطباعتها من الحاسبة</p></div><span style="font-size:12px;color:#d8e2f3">يعمل محلياً — صورك تبقى على جهازك</span></header>
+<header>
+<h2>Moamen Photo Studio</h2>
+<div>استوديو صور المعاملات الشخصية</div>
+</header>
 <main>
-<section class="panel no-print">
-<h2>إعداد الصورة</h2>
-<div class="group"><label for="upload">1. اختر صورة من الحاسبة</label><input id="upload" type="file" accept="image/*"><div class="note">يفضّل اختيار صورة واضحة والوجه مقابل للكاميرا.</div></div>
-<div class="group">
-<label>2. قياس صورة المعاملة</label>
-<select id="preset">
-<option value="3.5,4.5">3.5 × 4.5 سم — صورة معاملات</option>
-<option value="4,6">4 × 6 سم</option><option value="3,4">3 × 4 سم</option>
-<option value="5,5">5 × 5 سم — مربعة</option><option value="2.5,3.5">2.5 × 3.5 سم</option>
-<option value="custom">قياس مخصص</option></select>
-<div class="two" style="margin-top:10px"><div><label>العرض (سم)</label><input id="w" type="number" min="1" max="15" step=".1" value="3.5"></div><div><label>الارتفاع (سم)</label><input id="h" type="number" min="1" max="20" step=".1" value="4.5"></div></div>
-</div>
-<div class="group">
-<label>3. ضبط الصورة داخل الإطار</label>
-<label style="font-weight:normal">تكبير / تصغير</label><input id="zoom" type="range" min="1" max="3" step=".01" value="1">
-<label style="font-weight:normal;margin-top:9px">تحريك أفقي</label><input id="xpos" type="range" min="-100" max="100" value="0">
-<label style="font-weight:normal;margin-top:9px">تحريك عمودي</label><input id="ypos" type="range" min="-100" max="100" value="0">
-</div>
-<div class="group">
-<label>4. الترتيب الذكي للوجه</label>
-<button class="btn secondary" id="smart" type="button" disabled>ترتيب الوجه تلقائياً</button>
-<div class="note">يحاول تحديد الوجه وضبط حجمه ومكانه داخل الإطار على الجهاز، دون تعديل ملامح الوجه أو إنشاء وجه جديد. تعتمد الميزة على دعم المتصفح لكشف الوجوه.</div>
-</div>
-<div class="group">
-<label>5. الخلفية</label><select id="bg"><option value="#ffffff">أبيض</option><option value="#dcecff">أزرق فاتح</option><option value="#b9d8f5">أزرق</option><option value="#eeeeee">رمادي فاتح</option><option value="#e8e8e8">رمادي</option><option value="#ffffff00">بدون تغيير / شفافة غير مضمونة بالطباعة</option></select>
-</div>
-<div class="group">
-<label>6. المظهر الرسمي</label>
-<div class="check"><input type="checkbox" id="suit"><label for="suit">إظهار قاط ورباط (قالب رسومي)</label></div>
-<div class="note">القاط والرباط هنا طبقة رسومية قابلة للضبط وليست تبديل ملابس بالذكاء الاصطناعي. للحصول على نتيجة واقعية تماماً يلزم محرّك تعديل صور بالذكاء الاصطناعي.</div>
-</div>
-<div class="group">
-<label>7. إعداد ورقة الطباعة</label>
-<select id="paper"><option value="a4">A4</option><option value="10x15">ورق صور 10 × 15 سم</option></select>
-<div class="two" style="margin-top:10px"><div><label>عدد الأعمدة</label><select id="cols"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div><div><label>عدد النسخ</label><input id="copies" type="number" min="1" max="100" value="8"></div></div>
-</div>
-<div class="actions"><button class="btn" id="save" disabled>حفظ الصورة JPG</button><button class="btn secondary" id="print" disabled>طباعة الصور</button><button class="btn secondary" id="reset">إعادة ضبط</button></div>
-<div class="note">ملاحظة: من نافذة الطباعة اختر الطابعة الفعلية، وأوقف خيار “ملاءمة الصفحة” إن ظهر، واختر الحجم الفعلي / 100% للحصول على قياس أدق. قد تختلف النتيجة حسب إعدادات الطابعة.</div>
+<section class="panel">
+<h3>1 - اختيار الصورة</h3>
+<input type="file" id="photo" accept="image/*">
+<div class="preview"><canvas id="canvas" width="600" height="780"></canvas></div>
 </section>
-<section class="preview">
-<div class="preview-top"><h2>معاينة الصورة النهائية</h2><span class="status" id="status">ارفع صورة للبدء</span></div>
-<div class="canvas-wrap" id="canvasWrap"><div class="empty" id="empty">اختر صورة من الحاسبة<br>وستظهر المعاينة هنا</div><canvas id="canvas" width="413" height="531" hidden></canvas></div>
-<div id="printSheet"></div>
-<div class="status">المعاينة تقريبية — القياس النهائي يعتمد على إعدادات الطابعة والورق.</div>
+<section class="panel">
+<h3>2 - إعداد الصورة</h3>
+<div class="controls">
+<label>الخلفية:
+<select id="bg">
+<option value="#ffffff">أبيض</option>
+<option value="#dce8f5">أزرق فاتح</option>
+<option value="#eeeeee">رمادي فاتح</option>
+</select>
+</label>
+<label>التكبير:
+<input id="zoom" type="range" min="0.5" max="2.5" step="0.05" value="1">
+</label>
+<label>تحريك أفقي:
+<input id="x" type="range" min="-200" max="200" value="0">
+</label>
+<label>تحريك عمودي:
+<input id="y" type="range" min="-200" max="200" value="0">
+</label>
+</div>
 </section>
-</main><footer>استوديو صور المعاملات · برمجة وتصميم مؤمن لؤي</footer>
+<section class="panel">
+<h3>3 - القاط الرسمي</h3>
+<div class="controls">
+<label>اللون:
+<select id="suit">
+<option value="#17243a">كحلي</option>
+<option value="#171717">أسود</option>
+<option value="#666666">رمادي</option>
+</select>
+</label>
+<label>إظهار القاط:
+<input type="checkbox" id="jacket" checked>
+</label>
+</div>
+</section>
+<section class="panel">
+<h3>4 - الطباعة</h3>
+<div class="controls">
+<label>عدد الصور:
+<select id="count">
+<option>6</option><option>4</option><option>8</option>
+</select>
+</label>
+<label>مقاس الصورة:
+<select id="size">
+<option value="35,45">3.5 × 4.5 سم</option>
+<option value="40,60">4 × 6 سم</option>
+</select>
+</label>
+</div>
+<button onclick="savePhoto()">حفظ الصورة JPG</button>
+<button onclick="printPhotos()">طباعة ورقة A4</button>
+</section>
+</main>
 <script>
-const $=id=>document.getElementById(id), c=$('canvas'),ctx=c.getContext('2d');
-let img=null, lastData=null;
-function dims(){return [Math.max(1,Number($('w').value)||3.5),Math.max(1,Number($('h').value)||4.5)]}
-function draw(){
- if(!img)return;
- const [w,h]=dims(),ratio=w/h,baseH=700,baseW=Math.round(baseH*ratio);
- c.width=baseW;c.height=baseH;
- ctx.fillStyle=$('bg').value==='#ffffff00'?'#fff':$('bg').value;ctx.fillRect(0,0,c.width,c.height);
- const z=Number($('zoom').value),scale=Math.max(c.width/img.width,c.height/img.height)*z;
- const dw=img.width*scale,dh=img.height*scale;
- const dx=(c.width-dw)/2 + Number($('xpos').value)*c.width/200;
- const dy=(c.height-dh)/2 + Number($('ypos').value)*c.height/200;
- ctx.save();ctx.beginPath();ctx.rect(0,0,c.width,c.height);ctx.clip();ctx.drawImage(img,dx,dy,dw,dh);ctx.restore();
- if($('suit').checked)drawSuit();
- $('empty').hidden=true;c.hidden=false;$('save').disabled=false;$('print').disabled=false;$('smart').disabled=false;
- $('status').textContent=`${w} × ${h} سم`;
- lastData=c.toDataURL('image/jpeg',.96);
-}
-function drawSuit(){
- const W=c.width,H=c.height;
- // A simple formal jacket-and-tie overlay anchored to the lower torso.
- ctx.save();ctx.translate(0,0);
- const top=H*.62;
- ctx.fillStyle='#17243d';ctx.beginPath();ctx.moveTo(W*.19,H*1.02);ctx.lineTo(W*.27,top+H*.12);ctx.quadraticCurveTo(W*.5,top-H*.02,W*.73,top+H*.12);ctx.lineTo(W*.82,H*1.02);ctx.closePath();ctx.fill();
- ctx.fillStyle='#f7f7f7';ctx.beginPath();ctx.moveTo(W*.39,top+H*.02);ctx.lineTo(W*.5,top+H*.17);ctx.lineTo(W*.61,top+H*.02);ctx.lineTo(W*.57,H*1.02);ctx.lineTo(W*.43,H*1.02);ctx.closePath();ctx.fill();
- ctx.fillStyle='#b51f35';ctx.beginPath();ctx.moveTo(W*.5,top+H*.13);ctx.lineTo(W*.545,top+H*.22);ctx.lineTo(W*.52,H*.88);ctx.lineTo(W*.5,H*.92);ctx.lineTo(W*.48,H*.88);ctx.lineTo(W*.455,top+H*.22);ctx.closePath();ctx.fill();
- ctx.fillStyle='#101a2c';ctx.beginPath();ctx.moveTo(W*.27,top+H*.12);ctx.lineTo(W*.43,top+H*.02);ctx.lineTo(W*.5,top+H*.17);ctx.lineTo(W*.39,H*1.02);ctx.closePath();ctx.fill();
- ctx.beginPath();ctx.moveTo(W*.73,top+H*.12);ctx.lineTo(W*.57,top+H*.02);ctx.lineTo(W*.5,top+H*.17);ctx.lineTo(W*.61,H*1.02);ctx.closePath();ctx.fill();
- ctx.restore();
-}
-$('upload').addEventListener('change',e=>{
- const f=e.target.files[0];if(!f)return;
- if(!f.type.startsWith('image/')){alert('يرجى اختيار ملف صورة.');return}
- const url=URL.createObjectURL(f);const im=new Image();
- im.onload=()=>{img=im;$('zoom').value=1;$('xpos').value=0;$('ypos').value=0;draw();URL.revokeObjectURL(url)};
- im.onerror=()=>alert('تعذر فتح الصورة.');im.src=url;
-});
-$('preset').addEventListener('change',()=>{
- if($('preset').value!=='custom'){const [w,h]=$('preset').value.split(',');$('w').value=w;$('h').value=h;draw()}
-});
-['w','h','zoom','xpos','ypos','bg','suit'].forEach(id=>$(id).addEventListener('input',draw));
-$('save').onclick=()=>{if(!img)return;const a=document.createElement('a');a.href=c.toDataURL('image/jpeg',.98);a.download='photo-transaction.jpg';a.click()};
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-$('smart').onclick=async()=>{
- if(!img)return;
- if(!('FaceDetector' in window)){
-   alert('متصفحك لا يدعم كشف الوجه محلياً. استخدم منزلقات التكبير والتحريك يدوياً، أو افتح الموقع بمتصفح Chrome محدّث إذا كانت الميزة متاحة على جهازك.');
-   return;
- }
- try{
-   const detector=new FaceDetector({fastMode:true,maxDetectedFaces:1});
-   const faces=await detector.detect(img);
-   if(!faces.length){alert('لم يتم العثور على وجه واضح. قرّب الوجه أو اضبط الصورة يدوياً.');return;}
-   const b=faces[0].boundingBox;
-   const [w,h]=dims();
-   const W=413, H=531;
-   const scale=Math.max(W/img.width,H/img.height,W/(b.width*0.38));
-   const dw=img.width*scale, dh=img.height*scale;
-   const desiredX=W/2-(b.x+b.width/2)*scale;
-   const desiredY=H*0.39-(b.y+b.height/2)*scale;
-   $('zoom').value=Math.max(1,Math.min(3,scale/Math.max(W/img.width,H/img.height)));
-   const actualScale=Math.max(W/img.width,H/img.height)*Number($('zoom').value);
-   const actualW=img.width*actualScale, actualH=img.height*actualScale;
-   $('xpos').value=Math.max(-100,Math.min(100,(desiredX-(W-actualW)/2)*200/W));
-   $('ypos').value=Math.max(-100,Math.min(100,(desiredY-(H-actualH)/2)*200/H));
-   draw();
-   $('status').textContent='تم ترتيب الوجه — راجع المعاينة';
- }catch(e){alert('تعذر كشف الوجه على هذا المتصفح. يمكنك ضبط الصورة يدوياً.');}
-};
+let img = new Image();
+let hasImage = false;
 
-$('reset').onclick=()=>{img=null;$('upload').value='';c.hidden=true;$('empty').hidden=false;$('save').disabled=true;$('print').disabled=true;$('smart').disabled=true;$('status').textContent='ارفع صورة للبدء';$('printSheet').innerHTML='';};
-$('print').onclick=()=>{
- if(!img)return;
- const [w,h]=dims(),copies=Math.max(1,Math.min(100,Number($('copies').value)||1)),cols=Number($('cols').value);
- const sheet=$('printSheet');sheet.innerHTML='';sheet.style.setProperty('--cols',cols);sheet.style.setProperty('--photo-w',w+'mm');sheet.style.setProperty('--photo-h',h+'mm');
- const paper=$('paper').value;
- if(paper==='10x15'){document.documentElement.style.setProperty('--dummy','1');}
- const src=c.toDataURL('image/jpeg',.98);
- for(let i=0;i<copies;i++){const im=document.createElement('img');im.className='print-photo';im.src=src;sheet.appendChild(im)}
- window.print();
-};
-$('paper').addEventListener('change',()=>{if($('paper').value==='10x15')alert('للطباعة على 10×15 سم، اختر حجم الورق 10×15 من خصائص الطابعة قبل الطباعة.');});
-</script></body></html>
+const photo = document.getElementById("photo");
+const bg = document.getElementById("bg");
+const zoom = document.getElementById("zoom");
+const xpos = document.getElementById("x");
+const ypos = document.getElementById("y");
+const suit = document.getElementById("suit");
+const jacket = document.getElementById("jacket");
+
+photo.addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    img.onload = function() {
+      hasImage = true;
+      draw();
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+[bg, zoom, xpos, ypos, suit, jacket].forEach(el => {
+  el.addEventListener("input", draw);
+});
+
+function draw() {
+  ctx.clearRect(0, 0, 600, 780);
+  ctx.fillStyle = bg.value;
+  ctx.fillRect(0, 0, 600, 780);
+
+  if (!hasImage) {
+    ctx.fillStyle = "#555";
+    ctx.font = "28px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("اختر صورة للبدء", 300, 390);
+    return;
+  }
+
+  const scale = Math.max(600 / img.width, 780 / img.height) * Number(zoom.value);
+  const w = img.width * scale;
+  const h = img.height * scale;
+  const x = (600 - w) / 2 + Number(xpos.value);
+  const y = (780 - h) / 2 + Number(ypos.value);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, 600, 780);
+  ctx.clip();
+  ctx.drawImage(img, x, y, w, h);
+  ctx.restore();
+
+  if (jacket.checked) {
+    ctx.save();
+    ctx.fillStyle = suit.value;
+    ctx.beginPath();
+    ctx.moveTo(0, 780);
+    ctx.lineTo(0, 570);
+    ctx.quadraticCurveTo(100, 550, 180, 570);
+    ctx.lineTo(235, 650);
+    ctx.lineTo(300, 590);
+    ctx.lineTo(365, 650);
+    ctx.lineTo(420, 570);
+    ctx.quadraticCurveTo(500, 550, 600, 570);
+    ctx.lineTo(600, 780);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(235, 610);
+    ctx.lineTo(300, 690);
+    ctx.lineTo(365, 610);
+    ctx.lineTo(335, 780);
+    ctx.lineTo(265, 780);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(300, 690);
+    ctx.lineTo(300, 780);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function savePhoto() {
+  if (!hasImage) {
+    alert("اختار صورة أولاً");
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.download = "Moamen-Photo.jpg";
+  link.href = canvas.toDataURL("image/jpeg", 0.95);
+  link.click();
+}
+
+function printPhotos() {
+  if (!hasImage) {
+    alert("اختار صورة أولاً");
+    return;
+  }
+
+  const count = Number(document.getElementById("count").value);
+  const dimensions = document.getElementById("size").value.split(",");
+  const width = Number(dimensions[0]);
+  const height = Number(dimensions[1]);
+  const imageData = canvas.toDataURL("image/jpeg", 0.95);
+
+  const printWindow = window.open("", "_blank");
+
+  if (!printWindow) {
+    alert("اسمح بفتح النوافذ المنبثقة حتى تطبع");
+    return;
+  }
+
+  let pictures = "";
+  for (let i = 0; i < count; i++) {
+    pictures += `<img src="${imageData}" style="width:${width}mm;height:${height}mm;object-fit:cover">`;
+  }
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="ar">
+    <head>
+    <meta charset="UTF-8">
+    <title>طباعة الصور</title>
+    <style>
+      @page { size: A4; margin: 10mm; }
+      body { margin:0; }
+      .sheet {
+        display:grid;
+        grid-template-columns:repeat(2, ${width}mm);
+        grid-auto-rows:${height}mm;
+        gap:5mm;
+        justify-content:center;
+        align-content:start;
+      }
+      img { display:block; }
+    </style>
+    </head>
+    <body>
+      <div class="sheet">${pictures}</div>
+      <script>
+        window.onload = function() {
+          setTimeout(function(){ window.print(); }, 500);
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+}
+
+draw();
+</script>
+</body>
+</html>
